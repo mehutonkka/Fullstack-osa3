@@ -26,7 +26,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :p
 
 
 
-const infoText = (date) => {
+const infoText = (date, persons) => {
   return (
     `<div>
       <p> 
@@ -45,7 +45,10 @@ app.get('/', (request, response) => {
 
 app.get('/info', (request, response) => {
   const date = Date()
-  response.send(infoText(date))
+  Person.find({}).then(persons => {
+    response.send(infoText(date, persons))
+  })
+  
 })
 
 app.get('/api/persons', (request, response) => {
