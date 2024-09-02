@@ -106,9 +106,27 @@ app.get('/api/persons/:id', (request, response, next) => {
   })
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const id = request.body.id
+  const {name, number} = request.body
+  const person = {
+    name,
+    number,
+  }
 
+  Person.findByIdAndUpdate(id, person, {new: true, runValidators: true, context: 'query'})
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
+  
+})
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
     .then(result => {
     response.status(204).end()
